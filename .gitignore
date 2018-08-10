@@ -2,6 +2,8 @@ build/
 # but do track lib.a, even though you're ignoring .a files above
 #!lib.a
 
+PedidosFront/node_modules/
+
 # only ignore the TODO file in the current directory, not subdir/TODO
 #/TODO
 
