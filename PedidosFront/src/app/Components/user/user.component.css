@@ -1,0 +1,61 @@
+:host{
+    color: white;
+}
+
+.title-form{
+    font-size: 2em;
+}
+
+.buttonRow{
+    margin-right: 8px;
+}
+
+.tablecontainer {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+  }
+
+  mat-cell{
+    display:flex !important;
+    justify-content:center!important;
+    
+  }
+  
+  mat-header-cell {
+    display:flex;
+    justify-content:center;
+  }
+
+
+.mat-form-field {
+font-size: 14px;
+width: 100%;
+}
+tr.mat-footer-row {
+    font-weight: bold;
+} 
+
+ .selected {
+    background:#645d5d;
+}
+
+a:link {
+    color: red;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
+
+/* mouse over link */
+a:hover {
+    color: hotpink;
+}
+
+/* selected link */
+a:active {
+    color: blue;
+}
+

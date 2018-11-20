@@ -1,9 +1,44 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Pedidos" [src]="urlPedidos">
+<div style="text-align:center; font-family: 'Montserrat', sans-serif;">
+
+  <!--The content below is only a placeholder and can be replaced.-->
+  <div style="text-align:center; font-family: 'Montserrat', sans-serif;">
+    <ng-container>
+        <mat-toolbar class="order-header">
+            <button  mat-button (click)="sidenav.toggle()"><i class="material-icons">
+                menu
+            </i></button> 
+            <button id="btnBadge"  *ngIf="PendingOrders!==0 else teste"  mat-button (click)="testeppp()">
+                <mat-icon style="cursor: pointer;" matTooltip="Pending Orders"   matBadge="{{PendingOrders}}" matBadgeColor="warn">chrome_reader_mode</mat-icon>
+            </button> 
+            <ng-template #teste>
+                <button id="btnBadge" mat-button>
+                    <mat-icon style="cursor: pointer;" matTooltip="Whitout Pending Orders">chrome_reader_mode</mat-icon>
+                </button> 
+            </ng-template>
+        </mat-toolbar>
+        <mat-sidenav-container class="order-container">
+          <mat-sidenav #sidenav mode="side" opened class="order-sidenav"
+                       [fixedInViewport]="options.value.fixed" [fixedTopGap]="options.value.top"
+                       [fixedBottomGap]="options.value.bottom">
+            <!-- {{options.value.fixed ? 'Fixed' : 'Non-fixed'}} Sidenav -->
+            <ul>
+             <li>
+                <a routerLink="/users" routerLinkActive="active">Users</a>
+              </li> 
+              <li>
+                  <a routerLink=""  >Orders</a>
+                </li> 
+            </ul>
+          </mat-sidenav>
+          <router-outlet></router-outlet>
+        </mat-sidenav-container>
+      
+        <mat-toolbar class="order-footer">
+          <span id="spnCopiRigth">Copirigth © 2019 - Sebastián Palacio</span>
+        </mat-toolbar>
+      </ng-container>
+  </div>
 </div>
 
 

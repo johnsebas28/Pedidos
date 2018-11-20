@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI", "OrdersAPI\OrdersAPI.csproj", "{C6AD2AAF-21F3-4971-A403-97D9C56F0A4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersDAL", "OrdersDAL\OrdersDAL.csproj", "{A9576E34-568A-45A1-A1A2-519099DF1A72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersModels", "OrdersModels\OrdersModels.csproj", "{9FC41826-29BD-47D8-B235-1F90C760D548}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6AD2AAF-21F3-4971-A403-97D9C56F0A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6AD2AAF-21F3-4971-A403-97D9C56F0A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6AD2AAF-21F3-4971-A403-97D9C56F0A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6AD2AAF-21F3-4971-A403-97D9C56F0A4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9576E34-568A-45A1-A1A2-519099DF1A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9576E34-568A-45A1-A1A2-519099DF1A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9576E34-568A-45A1-A1A2-519099DF1A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9576E34-568A-45A1-A1A2-519099DF1A72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FC41826-29BD-47D8-B235-1F90C760D548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FC41826-29BD-47D8-B235-1F90C760D548}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FC41826-29BD-47D8-B235-1F90C760D548}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FC41826-29BD-47D8-B235-1F90C760D548}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34BD4727-CCC5-49FD-9029-8E60E55C41A8}
+	EndGlobalSection
+EndGlobal

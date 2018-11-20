@@ -1,0 +1,77 @@
+<div class="container">
+    <p>
+      <label class="title-form" for="">Users</label>
+    </p>
+        <div class="col-sm-12 col-md-12 ">
+                <!-- <div class="col-md-12">
+                        <label>Photo</label>
+                        <div class="photo">
+                            <img  src="https://pbs.twimg.com/profile_images/1044212473409220609/fo0gqgrM_400x400.jpg" alt="My Picture">
+                        </div>
+                       <app-file-upload></app-file-upload>
+                </div> -->
+            <div class="col-md-12">
+                <div class="tablecontainer">
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                        
+                    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+                        <ng-container matColumnDef="select">
+                            <mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                </mat-checkbox>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                </mat-checkbox>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="idUser">
+                            <mat-header-cell *matHeaderCellDef> Id_User </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.idUser}} </mat-cell>
+                        </ng-container>
+                        
+                        <ng-container matColumnDef="identification">
+                            <mat-header-cell *matHeaderCellDef> Identification </mat-header-cell>
+                            <mat-cell *matCellDef="let element"><a style="cursor: pointer; color:#e91e63" (click)="openDialog(element.identification)">{{element.identification}} </a> </mat-cell>
+
+                        </ng-container>
+                        
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                        </ng-container>
+                        
+                        <ng-container matColumnDef="lastName">
+                            <mat-header-cell *matHeaderCellDef> Last Name </mat-header-cell>
+                            <mat-cell *matCellDef="let element"> {{element.lastName}} </mat-cell>
+                        </ng-container>
+                        
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr> -->
+                        <mat-row *matRowDef="let row; columns: displayedColumns;"
+                        [ngClass]="{ 'selected': selection.isSelected(row)}"
+                        (click)="selection.select(row)"></mat-row>
+                </table>
+                <mat-paginator [pageSizeOptions]="[6, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+        </div>
+            
+        <div class="col-md-12" style="margin-top: 20px">
+                <button mat-raised-button color="primary" (click)="newUser();" class="buttonRow">New</button> 
+                <button mat-raised-button color="primary" (click)="PushOrder();" class="buttonRow">Push</button> 
+                <button mat-raised-button color="warn" [disabled]="!this.selection.hasValue()" (click)="deleteUser()" class="buttonRow">Delete</button>
+            <!-- <button mat-raised-button>Basic</button>
+            <button mat-raised-button color="primary">Primary</button>
+            <button mat-raised-button color="accent">Accent</button>
+            <button mat-raised-button color="warn">Warn</button>
+            <button mat-raised-button disabled>Disabled</button>
+            <a mat-raised-button routerLink=".">Link</a> -->
+        </div> 
+  </div>
