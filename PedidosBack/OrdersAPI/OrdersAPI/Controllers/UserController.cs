@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using OrdersDAL.Interfaces;
 using OrdersAPI.Manager;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 
 namespace OrdersAPI.Controllers
 {
@@ -35,6 +36,7 @@ namespace OrdersAPI.Controllers
 
         // GET: api/User
         [HttpGet]
+        [EnableCors("MyPolicy")]
         public ActionResult<DataTransfer<User>> Get()
         {
             //UserInsert ui = new UserInsert();
@@ -58,16 +60,19 @@ namespace OrdersAPI.Controllers
             user = userManager.GetAllUserList();
             var users = Mapper.Map<IEnumerable<UserDto>>(user.lsdata);
             
+            
+
             if (user.code != 0)
             {
                 return NotFound();
             }
-            return Ok(users);
+            return Ok(user);
 
         }
 
         // GET: api/User/5
         [HttpGet("{id}", Name = "GetUser")]
+        [EnableCors("MyPolicy")]
         public ActionResult<DataTransfer<User>> Get(string id)
         {
 
@@ -90,6 +95,7 @@ namespace OrdersAPI.Controllers
 
         // POST: api/User
         [HttpPost]
+        [EnableCors("MyPolicy")]
         public ActionResult<DataTransfer<User>> Post([FromBody] UserInsert user)
         {
             DataTransfer<User> response = new DataTransfer<User>();
@@ -120,6 +126,7 @@ namespace OrdersAPI.Controllers
 
         // PUT: api/User/5
         [HttpPut("{id}")]
+        [EnableCors("MyPolicy")]
         public ActionResult<DataTransfer<User>> Put(string id, [FromBody] UserUpdate user)
         {
             DataTransfer<User> response = new DataTransfer<User>();
@@ -151,8 +158,33 @@ namespace OrdersAPI.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [EnableCors("MyPolicy")]
+        public ActionResult<DataTransfer<User>> Delete(string id)
         {
+            DataTransfer<User> response = new DataTransfer<User>();
+            try
+            {
+                UserManager userManager = new UserManager(appSettings);
+                string errorMessage = string.Empty;
+                int errorCode = 0;
+                userManager.DeleteUser(id, ref errorCode, ref errorMessage);
+                if (errorCode != 0)
+                {
+                    response.code = errorCode;
+                    response.message = errorMessage;
+                    return NotFound(response);
+                }
+                response.code = errorCode;
+                response.message = "OK";
+                return Ok(response);
+
+            }
+            catch (Exception ex)
+            {
+                response.code = -100;
+                response.message = ex.Message;
+                return BadRequest(response);
+            }
         }
     }
 }

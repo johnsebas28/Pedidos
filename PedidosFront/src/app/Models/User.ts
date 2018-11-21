@@ -1,5 +1,5 @@
 export class User {
-    public idUser:number;
+    public idUser:String;
     public identification: String;
     public name:String;
     public lastName: String;
@@ -10,7 +10,7 @@ export class User {
     public phone: String;
     public isActive : Boolean;
     constructor( ){
-    this.idUser = 0;
+    this.idUser = "";
        this.address = "";
        this.email = "";
        this.identification = "";

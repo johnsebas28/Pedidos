@@ -22,4 +22,8 @@ export class OrderHttpService {
   put(url: string,data:any,headers:HttpHeaders): Observable<any>{
     return this.httpClient.put<any>(url, data ,{headers:headers});
   }
+
+  delete(url: string,id:String,headers:HttpHeaders): Observable<any>{
+    return this.httpClient.delete<any>(url + "/" + id,{headers:headers});
+  }
 }

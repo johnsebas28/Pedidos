@@ -41,7 +41,7 @@ export class ModalUserComponent implements OnInit {
     // todo call service http to save user
     this.model.isActive = this.model.isActive || false;
 
-    if (! this.model.idUser || this.model.idUser == 0 )    {
+    if (! this.model.idUser || this.model.idUser == "" )    {
       this.http.post("https://localhost:44371/api/" + this.controller,this.model,null).subscribe((res:any)=>{
         console.log(res);
       },err=>{
@@ -49,6 +49,7 @@ export class ModalUserComponent implements OnInit {
         console.log("Error");
       });
     }else{
+      console.log("Update");
       this.http.put("https://localhost:44371/api/"+ this.controller +"/" + this.model.idUser, this.model,null).subscribe((res:any)=>{
         alert("OK");
       },err=>{

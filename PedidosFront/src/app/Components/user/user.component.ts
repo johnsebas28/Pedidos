@@ -26,6 +26,7 @@ export class UserComponent implements OnInit {
   selection = new SelectionModel<User>(true, [],true);
   isSelected:false;
   idUser:number;
+  arrayUSerSelected: Array<String>;
 
   constructor( 
   private http: OrderHttpService,
@@ -38,21 +39,35 @@ export class UserComponent implements OnInit {
 
  
 ngOnInit() {
+    this.arrayUSerSelected = new Array<String>();
     this.controller = "user";
     this.LoadTable();
       // selection changed
     this.selection.onChange.subscribe((a) =>
     {
+      
         if (a.added[0])   // will be undefined if no selection
         {
             // alert('You selected ' + a.added[0].identification);
+
             this.model = a.added[0];
+            this.arrayUSerSelected.push( a.added[0].idUser);
         }
+       
+        if(a.removed[0]){
+          var index = this.arrayUSerSelected.indexOf(a.removed[0].idUser);
+          if (index > -1) {
+            this.arrayUSerSelected.splice(index, 1);
+          }
+        }
+
+        console.log( this.arrayUSerSelected);
     });
   }
 
   private LoadTable() {
     this.http.get("https://localhost:44371/api/"+ this.controller, null).subscribe((res: any) => {
+      console.log(res);
       this.arrayUser = res.lsdata;
       this.dataSource = new MatTableDataSource(res.lsdata);
       this.dataSource.paginator = this.paginator;
@@ -109,8 +124,14 @@ ngOnInit() {
 
   deleteUser(){
     if(this.selection.hasValue()){
-      for (let i = 0; i < this.selection.selected.length; i++) {
-       
+      for (let i = 0; i < this.arrayUSerSelected.length; i++) {
+        this.http.delete("https://localhost:44371/api/"+ this.controller,this.arrayUSerSelected[i], null).subscribe((res: any) => {
+          console.log(res);
+
+         this.LoadTable();
+        }, err => {
+          console.log("Error en la respuesta");
+        });
       }
     }
   }

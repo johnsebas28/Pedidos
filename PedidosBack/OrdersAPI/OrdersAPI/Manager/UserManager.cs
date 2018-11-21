@@ -169,5 +169,29 @@ namespace OrdersAPI.Manager
                 return false;
             }
         }
+
+        public bool DeleteUser(string IdUser, ref int errorCode, ref string errorMessage)
+        {
+            try
+            {
+                var connectionString = appSettings.Value.DNS;
+                DALManager DAL = new DALManager();
+                DAL.openDatabase(connectionString);
+                ArrayList Parameters = new ArrayList();
+                Parameters.Add(new SqlParameter { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@idUser", SqlDbType = SqlDbType.NVarChar, Value = IdUser });
+
+                object ret = DAL.execSP("User_DEL", ref errorCode, ref errorMessage, Parameters);
+                if (errorCode != 0)
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
+        }
     }
 }

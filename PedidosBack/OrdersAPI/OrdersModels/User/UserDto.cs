@@ -6,7 +6,7 @@ namespace OrdersModels.UserPackage
 {
     public class UserDto
     {
-        public int idUser { get; set; }
+        public string idUser { get; set; }
         public string identification { get; set; }
         public string name { get; set; }
         public string address { get; set; }
