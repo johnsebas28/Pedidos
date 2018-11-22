@@ -53,52 +53,63 @@ namespace OrdersAPI.Controllers
             //string test = Newtonsoft.Json.JsonConvert.SerializeObject(ui);
 
             //throw new Exception("this is an exception");
-            DataTransfer<User> user = new DataTransfer<User>();
-           
+            List<User> userList = new List<User>();
+            DataTransfer<User> ret = new DataTransfer<User>();
             UserManager userManager = new UserManager(appSettings);
             var connectionString = appSettings.Value.DNS;
-            user = userManager.GetAllUserList();
-            var users = Mapper.Map<IEnumerable<UserDto>>(user.lsdata);
-            
-            
+            int CodError = 0;
+            string ErrorMessage = string.Empty;
+            userList = userManager.GetAllUserList(ref CodError, ref ErrorMessage);
+            var users = Mapper.Map<IEnumerable<UserDto>>(userList);
 
-            if (user.code != 0)
+            if (CodError != 0)
             {
                 return NotFound();
             }
-            return Ok(user);
+
+            ret.code = 0;
+            ret.message = "OK";
+            ret.lsdata = userList;
+            return Ok(ret);
 
         }
 
         // GET: api/User/5
         [HttpGet("{id}", Name = "GetUser")]
         [EnableCors("MyPolicy")]
-        public ActionResult<DataTransfer<User>> Get(string id)
+        public ActionResult<OneDataTransfer<User>> Get(string id)
         {
-
-            DataTransfer<User> UserResponse = new DataTransfer<User>();
+            OneDataTransfer<User> ret = new OneDataTransfer<User>();
+            User user = new User();
             UserManager userManager = new UserManager(appSettings);
             var connectionString = appSettings.Value.DNS;
-            UserResponse = userManager.GetUserById(id);
-            if (UserResponse.code != 0)
+            int CodError = 0;
+            string ErrorMessage = string.Empty;
+            user = userManager.GetUserById(id,ref CodError, ref ErrorMessage);
+            if (CodError != 0)
             {
-                return NotFound();
+                ret.code = CodError;
+                ret.message = ErrorMessage;
+                return NotFound(ret);
             }
-            if (UserResponse.lsdata  == null && UserResponse.data.idUser == null) {
-                UserResponse.data = null;
-                UserResponse.code = -98;
-                UserResponse.message = "Id Not found";
-                return NotFound();
+            if (user  == null && user.idUser == null) {
+                ret.data = null;
+                ret.code = -98;
+                ret.message = "Id Not found";
+                return NotFound(ret);
             }
-            return Ok(UserResponse);
+            ret.data = user;
+            ret.code = 0;
+            ret.message = "OK";
+            return Ok(ret);
         }
 
         // POST: api/User
         [HttpPost]
         [EnableCors("MyPolicy")]
-        public ActionResult<DataTransfer<User>> Post([FromBody] UserInsert user)
+        public ActionResult<OneDataTransfer<User>> Post([FromBody] UserInsert user)
         {
-            DataTransfer<User> response = new DataTransfer<User>();
+            OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
             {
                 int errorCode = 0;
@@ -127,9 +138,9 @@ namespace OrdersAPI.Controllers
         // PUT: api/User/5
         [HttpPut("{id}")]
         [EnableCors("MyPolicy")]
-        public ActionResult<DataTransfer<User>> Put(string id, [FromBody] UserUpdate user)
+        public ActionResult<OneDataTransfer<User>> Put(string id, [FromBody] UserUpdate user)
         {
-            DataTransfer<User> response = new DataTransfer<User>();
+            OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
             {
                 UserManager userManager = new UserManager(appSettings);
@@ -159,14 +170,29 @@ namespace OrdersAPI.Controllers
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         [EnableCors("MyPolicy")]
-        public ActionResult<DataTransfer<User>> Delete(string id)
+        public ActionResult<OneDataTransfer<User>> Delete(string id)
         {
-            DataTransfer<User> response = new DataTransfer<User>();
+            string errorMessage = string.Empty;
+            int errorCode = 0;
+            OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
-            {
-                UserManager userManager = new UserManager(appSettings);
-                string errorMessage = string.Empty;
-                int errorCode = 0;
+            {   UserManager userManager = new UserManager(appSettings);
+                var userExists = userManager.GetUserById(id, ref errorCode, ref errorMessage);
+                if (errorCode != 0)
+                {
+                    response.data = null;
+                    response.code = errorCode;
+                    response.message = "TODO: Error";
+                    return NotFound();
+                }
+                if (userExists == null)
+                {
+                    response.data = null;
+                    response.code = errorCode;
+                    response.message = "User Not Found";
+                    return NotFound(response);
+                }
+                
                 userManager.DeleteUser(id, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
                 {

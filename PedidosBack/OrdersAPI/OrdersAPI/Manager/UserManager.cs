@@ -15,7 +15,6 @@ namespace OrdersAPI.Manager
     public class UserManager
     {
         private  readonly IOptions<AppSettings> appSettings;
-
         public UserManager(IOptions<AppSettings> app)
         {
             appSettings = app;
@@ -43,12 +42,9 @@ namespace OrdersAPI.Manager
            
             return ret;
         }
-        public DataTransfer<User> GetAllUserList()
+        public List<User> GetAllUserList(ref int CodError, ref string ErrorMessage)
         {
-            int CodError = 0;
-            string ErrorMessage = "";
             var connectionString = appSettings.Value.DNS;
-            DataTransfer<User> ToUser = new DataTransfer<User>();
             DALManager DAL = new DALManager();
             DAL.openDatabase(connectionString);
             ArrayList list = new ArrayList();
@@ -63,22 +59,17 @@ namespace OrdersAPI.Manager
             object ret = DAL.execSP("User_SEL_ALL", ref CodError, ref ErrorMessage);
             if (CodError < 0)
             {
-                ToUser.code = CodError;
-                ToUser.message = ErrorMessage;
-                return ToUser;
+                return null;
             }
             var j = (DataSet)ret;
             int rows = j.Tables[0].Rows.Count;
             List<User> userList = Utils.loadObjects<User>(j.Tables[0]);
-            ToUser.lsdata = userList;
-            return ToUser;
+            return userList;
         }
-        public DataTransfer<User> GetUserById(string idUser)
+        public User GetUserById(string idUser, ref int CodError, ref string ErrorMessage)
         {
-            int CodError = 0;
-            string ErrorMessage = "";
+
             var connectionString = appSettings.Value.DNS;
-            DataTransfer<User> ToUser = new DataTransfer<User>();
             DALManager DAL = new DALManager();
             DAL.openDatabase(connectionString);
             ArrayList Parameters = new ArrayList();
@@ -93,17 +84,21 @@ namespace OrdersAPI.Manager
             object ret = DAL.execSP("User_SEL_ALL_By_Id_User", ref CodError, ref ErrorMessage, Parameters);
             if (CodError < 0)
             {
-                ToUser.code = CodError;
-                ToUser.message = ErrorMessage;
-                return ToUser;
+                return null;
             }
             var j = (DataSet)ret;
             int rows = j.Tables[0].Rows.Count;
-            User user = Utils.loadObject<User>(j.Tables[0]);
-            ToUser.data = user;
-            return ToUser;
+            User user;
+            if (rows > 0)
+            {
+               user = Utils.loadObject<User>(j.Tables[0]);
+            }
+            else {
+                user = null;
+            }
+           
+            return user;
         }
-
         public string InsertUser(UserInsert MyUser,ref int errorCode,ref string errorMessage)
         {
             try
@@ -169,7 +164,6 @@ namespace OrdersAPI.Manager
                 return false;
             }
         }
-
         public bool DeleteUser(string IdUser, ref int errorCode, ref string errorMessage)
         {
             try
