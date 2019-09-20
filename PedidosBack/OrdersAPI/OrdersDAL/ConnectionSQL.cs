@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
@@ -15,11 +16,11 @@ namespace OrdersDAL
  
         public bool isOpen { get; set; }
 
-        public bool OpenConnection(string DNS)
+        public bool OpenConnection()
         {
             try
             {
-                sqlConnection = new SqlConnection(DNS);
+                sqlConnection = new SqlConnection("Password=Diosesamor1**;Persist Security Info=True;User ID=sa;Initial Catalog=CustomOrders;Data Source=LAP-JPALACIOS\\JSPV2SQLEXPRESS");
                 sqlConnection.Open();
                 isOpen = true;
                 return true;
@@ -78,7 +79,7 @@ namespace OrdersDAL
                     command.Parameters.Add(p1);
 
                     SqlParameter p2 = new SqlParameter();
-                    p2.DbType = DbType.Int16;
+                    p2.DbType = DbType.String;
                     p2.Direction = ParameterDirection.Output;
                     p2.ParameterName = "@strError";
                     p2.SqlDbType = SqlDbType.VarChar;

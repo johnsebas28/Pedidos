@@ -23,16 +23,6 @@ namespace OrdersAPI.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        //private IConfiguration configuration;
-        //public UserController(IConfiguration iConfig) {
-        //    configuration = iConfig;
-        //}
-        private readonly IOptions<AppSettings> appSettings;
-
-        public UserController(IOptions<AppSettings> app)
-        {
-            appSettings = app;
-        }
 
         // GET: api/User
         [HttpGet]
@@ -55,8 +45,8 @@ namespace OrdersAPI.Controllers
             //throw new Exception("this is an exception");
             List<User> userList = new List<User>();
             DataTransfer<User> ret = new DataTransfer<User>();
-            UserManager userManager = new UserManager(appSettings);
-            var connectionString = appSettings.Value.DNS;
+            //Startup.Configuration.
+            UserManager userManager = new UserManager();
             int CodError = 0;
             string ErrorMessage = string.Empty;
             userList = userManager.GetAllUserList(ref CodError, ref ErrorMessage);
@@ -81,8 +71,7 @@ namespace OrdersAPI.Controllers
         {
             OneDataTransfer<User> ret = new OneDataTransfer<User>();
             User user = new User();
-            UserManager userManager = new UserManager(appSettings);
-            var connectionString = appSettings.Value.DNS;
+            UserManager userManager = new UserManager();
             int CodError = 0;
             string ErrorMessage = string.Empty;
             user = userManager.GetUserById(id,ref CodError, ref ErrorMessage);
@@ -92,7 +81,7 @@ namespace OrdersAPI.Controllers
                 ret.message = ErrorMessage;
                 return NotFound(ret);
             }
-            if (user  == null && user.idUser == null) {
+            if (user  == null && user.IdUser == 0) {
                 ret.data = null;
                 ret.code = -98;
                 ret.message = "Id Not found";
@@ -114,7 +103,7 @@ namespace OrdersAPI.Controllers
             {
                 int errorCode = 0;
                 string errorMessage = "OK";
-                UserManager userManager = new UserManager(appSettings);
+                UserManager userManager = new UserManager();
                 string IdUser = userManager.InsertUser(user, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
                 {
@@ -143,7 +132,7 @@ namespace OrdersAPI.Controllers
             OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
             {
-                UserManager userManager = new UserManager(appSettings);
+                UserManager userManager = new UserManager();
                 string errorMessage = string.Empty;
                 int errorCode = 0;
                 userManager.UpdateUser(id, user, ref errorCode, ref errorMessage);
@@ -167,6 +156,12 @@ namespace OrdersAPI.Controllers
 
         }
 
+        [HttpPatch("{id}")]
+        [EnableCors("MyPolicy")]
+        public ActionResult<OneDataTransfer<User>> put(string id) {
+            return null;
+        }
+
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         [EnableCors("MyPolicy")]
@@ -176,8 +171,8 @@ namespace OrdersAPI.Controllers
             int errorCode = 0;
             OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
-            {   UserManager userManager = new UserManager(appSettings);
-                var userExists = userManager.GetUserById(id, ref errorCode, ref errorMessage);
+            {   UserManager userManager = new UserManager();
+                User userExists = userManager.GetUserById(id, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
                 {
                     response.data = null;
@@ -202,7 +197,7 @@ namespace OrdersAPI.Controllers
                 }
                 response.code = errorCode;
                 response.message = "OK";
-                return Ok(response);
+                return NoContent();
 
             }
             catch (Exception ex)

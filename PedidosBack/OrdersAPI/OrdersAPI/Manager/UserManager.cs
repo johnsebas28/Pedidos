@@ -14,15 +14,10 @@ namespace OrdersAPI.Manager
 {
     public class UserManager
     {
-        private  readonly IOptions<AppSettings> appSettings;
-        public UserManager(IOptions<AppSettings> app)
-        {
-            appSettings = app;
-        }
+
         public object GetAllUser() {
-            var connectionString = appSettings.Value.DNS;
             DALManager DAL = new DALManager();
-            DAL.openDatabase(connectionString);
+            DAL.openDatabase();
             ArrayList list = new ArrayList();
             SqlParameter p1 = new SqlParameter();
             p1.DbType = DbType.Int16;
@@ -44,17 +39,16 @@ namespace OrdersAPI.Manager
         }
         public List<User> GetAllUserList(ref int CodError, ref string ErrorMessage)
         {
-            var connectionString = appSettings.Value.DNS;
             DALManager DAL = new DALManager();
-            DAL.openDatabase(connectionString);
+            DAL.openDatabase();
             ArrayList list = new ArrayList();
-            SqlParameter p1 = new SqlParameter();
-            p1.DbType = DbType.Int16;
-            p1.Direction = ParameterDirection.Input;
-            p1.ParameterName = "@Id_User";
-            p1.SqlDbType = SqlDbType.Int;
-            p1.Value = 1;
-            list.Add(p1);
+            //SqlParameter p1 = new SqlParameter();
+            //p1.DbType = DbType.Int16;
+            //p1.Direction = ParameterDirection.Input;
+            //p1.ParameterName = "@Id_User";
+            //p1.SqlDbType = SqlDbType.Int;
+            //p1.Value = 1;
+            //list.Add(p1);
 
             object ret = DAL.execSP("User_SEL_ALL", ref CodError, ref ErrorMessage);
             if (CodError < 0)
@@ -68,10 +62,8 @@ namespace OrdersAPI.Manager
         }
         public User GetUserById(string idUser, ref int CodError, ref string ErrorMessage)
         {
-
-            var connectionString = appSettings.Value.DNS;
             DALManager DAL = new DALManager();
-            DAL.openDatabase(connectionString);
+            DAL.openDatabase();
             ArrayList Parameters = new ArrayList();
             SqlParameter p1 = new SqlParameter();
             p1.DbType = DbType.Int16;
@@ -104,9 +96,8 @@ namespace OrdersAPI.Manager
             try
             {
                 string idUSer = Guid.NewGuid().ToString();
-                var connectionString = appSettings.Value.DNS;
                 DALManager DAL = new DALManager();
-                DAL.openDatabase(connectionString);
+                DAL.openDatabase();
                 ArrayList Parameters = new ArrayList();
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@UserId", SqlDbType = SqlDbType.NVarChar, Value = idUSer });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Identification", SqlDbType = SqlDbType.NVarChar, Value = MyUser.identification });
@@ -136,9 +127,8 @@ namespace OrdersAPI.Manager
         {
             try
             {
-                var connectionString = appSettings.Value.DNS;
                 DALManager DAL = new DALManager();
-                DAL.openDatabase(connectionString);
+                DAL.openDatabase();
                 ArrayList Parameters = new ArrayList();
                 Parameters.Add(new SqlParameter { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@idUser", SqlDbType = SqlDbType.NVarChar, Value = IdUser });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Identification", SqlDbType = SqlDbType.NVarChar, Value = MyUser.identification });
@@ -168,9 +158,8 @@ namespace OrdersAPI.Manager
         {
             try
             {
-                var connectionString = appSettings.Value.DNS;
                 DALManager DAL = new DALManager();
-                DAL.openDatabase(connectionString);
+                DAL.openDatabase();
                 ArrayList Parameters = new ArrayList();
                 Parameters.Add(new SqlParameter { DbType = DbType.Int32, Direction = ParameterDirection.Input, ParameterName = "@idUser", SqlDbType = SqlDbType.NVarChar, Value = IdUser });
 

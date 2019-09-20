@@ -19,12 +19,13 @@ namespace OrdersAPI
 {
     public class Startup
     {
+        public static IConfiguration Configuration { get; set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -86,8 +87,8 @@ namespace OrdersAPI
 
             AutoMapper.Mapper.Initialize(cfg=> {
                 cfg.CreateMap<User, UserDto>()
-                .ForMember(dest => dest.name, opt => opt.MapFrom(src =>
-                  $"{src.name} {src.lastName}"));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                  $"{src.Name} {src.LastName}"));
             });
             app.UseHttpsRedirection();
             app.UseMvc();

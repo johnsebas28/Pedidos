@@ -11,8 +11,8 @@ namespace OrdersDAL
         public DALManager() {
             Connection = new ConnectionSQL();
         }
-        public bool openDatabase(string DSN) {
-            return Connection.OpenConnection(DSN);
+        public bool openDatabase() {
+            return Connection.OpenConnection();
         }
 
         public object execSP(string SPName, ref int codError, ref string ErrorMessage, ArrayList arrayParams = null) {

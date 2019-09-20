@@ -6,13 +6,13 @@ namespace OrdersModels.UserPackage
 {
     public class UserDto
     {
-        public string idUser { get; set; }
-        public string identification { get; set; }
-        public string name { get; set; }
-        public string address { get; set; }
-        public string nickName { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public bool isActive { get; set; }
+        public int IdUser { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public int IdPerfil { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public DateTime Date { get; set; }
+        public bool Active { get; set; }
     }
 }
