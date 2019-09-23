@@ -20,7 +20,7 @@ namespace OrdersDAL
         {
             try
             {
-                sqlConnection = new SqlConnection("Password=Diosesamor1**;Persist Security Info=True;User ID=sa;Initial Catalog=CustomOrders;Data Source=LAP-JPALACIOS\\JSPV2SQLEXPRESS");
+                sqlConnection = new SqlConnection("Password=Diosesamor1**;Persist Security Info=True;User ID=sa;Initial Catalog=CustomOrders;Data Source=TPGROUP16318\\JSPSQLEXPRESS");
                 sqlConnection.Open();
                 isOpen = true;
                 return true;
