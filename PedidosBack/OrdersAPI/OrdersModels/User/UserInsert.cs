@@ -6,6 +6,7 @@ namespace OrdersModels.UserPackage
 {
     public class UserInsert
     {
+        public int idPerfil { get; set; }
         public string identification { get; set; }
         public string name { get; set; }
         public string lastName { get; set; }

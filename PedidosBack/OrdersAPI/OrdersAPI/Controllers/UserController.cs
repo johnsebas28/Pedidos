@@ -20,7 +20,7 @@ using OrdersModels.User;
 
 namespace OrdersAPI.Controllers
 {
-    [Route("api/user")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UserController : Controller
     {
@@ -66,7 +66,7 @@ namespace OrdersAPI.Controllers
         }
 
         // GET: api/User/5
-        [HttpGet("{id}", Name = "GetUser")]
+        [HttpGet("{id}", Name = "getuser")]
         [EnableCors("MyPolicy")]
         public ActionResult<OneDataTransfer<User>> Get(string id)
         {
@@ -95,7 +95,9 @@ namespace OrdersAPI.Controllers
         }
 
         // POST: api/User
-        [HttpPost(Name = "UserLogin")]
+        [HttpPost(Name = "insert")]
+        [Route("[action]")]
+        [ActionName("insert")]
         [EnableCors("MyPolicy")]
         public ActionResult<OneDataTransfer<User>> Post([FromBody] UserInsert user)
         {
@@ -107,6 +109,10 @@ namespace OrdersAPI.Controllers
                 UserManager userManager = new UserManager();
 
                 //encrypt password
+                SecurityRSA rSA = new SecurityRSA();
+                string pubKey = rSA.GeneratePublicKey();
+                string encryptedPassword = rSA.Encrypt(pubKey, user.password);
+                user.password = encryptedPassword;
 
                 string IdUser = userManager.InsertUser(user, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
@@ -117,7 +123,7 @@ namespace OrdersAPI.Controllers
                 }
                 response.code = errorCode;
                 response.message = "OK";
-                return CreatedAtRoute("GetUser",new { id= IdUser},response);
+                return CreatedAtRoute("getuser",new { id= IdUser},response);
             }
             catch (Exception ex)
             {
@@ -129,35 +135,35 @@ namespace OrdersAPI.Controllers
         }
 
 
-        // POST: api/UserLogin
-        [HttpPost(Name = "UserLogin")]
-        [Route("login")]
+        //POST: api/UserLogin
+        [HttpPost(Name = "user-login")]
+        [ActionName("user-login")]
         [EnableCors("MyPolicy")]
-        public ActionResult<OneDataTransfer<User>> login([FromBody] UserLogin userLogin)
+        public ActionResult<OneDataTransfer<User>> userLogin([FromBody] UserLogin userLogin)
         {
             OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
             {
-                //int errorCode = 0;
-                //string errorMessage = "OK";
-                //UserManager userManager = new UserManager();
-                //string IdUser = userManager.InsertUser(user, ref errorCode, ref errorMessage);
-                //if (errorCode != 0)
-                //{
-                //    response.code = errorCode;
-                //    response.message = errorMessage;
-                //    return BadRequest(response);
-                //}
-                //response.code = errorCode;
-                //response.message = "OK";
-                //return CreatedAtRoute("GetUser", new { id = IdUser }, response);
-                SecurityRSA rSA = new SecurityRSA();
-                string privStringRSA = rSA.GeneratePrivateKey();
-                string pubKey = rSA.GeneratePublicKey();
-                string encryptedPassword = rSA.Encrypt(pubKey, userLogin.Password);
-                string Password = rSA.Decrypt(privStringRSA, encryptedPassword);
-                return CreatedAtRoute("GetUser", new { id = "" }, response);
+                int errorCode = 0;
+                string errorMessage = "OK";
+                UserManager userManager = new UserManager();
+                User user = userManager.GetUserByLogin(userLogin.UserName, ref errorCode, ref errorMessage);
 
+                SecurityRSA rSA = new SecurityRSA();
+                string pubKey = rSA.GeneratePublicKey();
+                string decryptedPass = rSA.Decrypt(user.Password);
+                if (decryptedPass == userLogin.Password)
+                {
+                    response.code = errorCode;
+                    response.message = "OK";
+                    return Ok(response);
+                }
+                else {
+                    response.code = errorCode;
+                    response.message = errorMessage;
+                    return StatusCode(500);
+                }
+               
             }
             catch (Exception ex)
             {

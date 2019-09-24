@@ -48,13 +48,15 @@ namespace OrdersAPI
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
-
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMvc(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
             });
+
+            
             //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
             //    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             //);
@@ -91,7 +93,11 @@ namespace OrdersAPI
                   $"{src.Name} {src.LastName}"));
             });
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

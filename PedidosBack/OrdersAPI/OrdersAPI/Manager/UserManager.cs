@@ -91,6 +91,39 @@ namespace OrdersAPI.Manager
            
             return user;
         }
+
+        public User GetUserByLogin(string login, ref int CodError, ref string ErrorMessage)
+        {
+            DALManager DAL = new DALManager();
+            DAL.openDatabase();
+            ArrayList Parameters = new ArrayList();
+            SqlParameter p1 = new SqlParameter();
+            p1.DbType = DbType.String;
+            p1.Direction = ParameterDirection.Input;
+            p1.ParameterName = "@Login";
+            p1.SqlDbType = SqlDbType.NVarChar;
+            p1.Value = login;
+            Parameters.Add(p1);
+
+            object ret = DAL.execSP("User_SEL_By_Login", ref CodError, ref ErrorMessage, Parameters);
+            if (CodError < 0)
+            {
+                return null;
+            }
+            var j = (DataSet)ret;
+            int rows = j.Tables[0].Rows.Count;
+            User user;
+            if (rows > 0)
+            {
+                user = Utils.loadObject<User>(j.Tables[0]);
+            }
+            else
+            {
+                user = null;
+            }
+
+            return user;
+        }
         public string InsertUser(UserInsert MyUser,ref int errorCode,ref string errorMessage)
         {
             try
@@ -99,7 +132,7 @@ namespace OrdersAPI.Manager
                 DALManager DAL = new DALManager();
                 DAL.openDatabase();
                 ArrayList Parameters = new ArrayList();
-                Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@UserId", SqlDbType = SqlDbType.NVarChar, Value = idUSer });
+                Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@IdPerfil", SqlDbType = SqlDbType.Int, Value = MyUser.idPerfil });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Identification", SqlDbType = SqlDbType.NVarChar, Value = MyUser.identification });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Name", SqlDbType = SqlDbType.NVarChar, Value = MyUser.name });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@LastName", SqlDbType = SqlDbType.NVarChar, Value = MyUser.lastName });
@@ -108,7 +141,6 @@ namespace OrdersAPI.Manager
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Password", SqlDbType = SqlDbType.NVarChar, Value = MyUser.password });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Email", SqlDbType = SqlDbType.NVarChar, Value = MyUser.email });
                 Parameters.Add(new SqlParameter { DbType = DbType.String, Direction = ParameterDirection.Input, ParameterName = "@Phone", SqlDbType = SqlDbType.NVarChar, Value = MyUser.phone });
-                Parameters.Add(new SqlParameter { DbType = DbType.Boolean, Direction = ParameterDirection.Input, ParameterName = "@IsActive", SqlDbType = SqlDbType.Bit, Value = MyUser.isActive });
 
                 object ret = DAL.execSP("User_INS", ref errorCode, ref errorMessage, Parameters);
                 if (errorCode != 0)
