@@ -16,6 +16,7 @@ using OrdersDAL.Interfaces;
 using OrdersAPI.Manager;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using OrdersModels.User;
 
 namespace OrdersAPI.Controllers
 {
@@ -94,7 +95,7 @@ namespace OrdersAPI.Controllers
         }
 
         // POST: api/User
-        [HttpPost]
+        [HttpPost(Name = "UserLogin")]
         [EnableCors("MyPolicy")]
         public ActionResult<OneDataTransfer<User>> Post([FromBody] UserInsert user)
         {
@@ -104,6 +105,9 @@ namespace OrdersAPI.Controllers
                 int errorCode = 0;
                 string errorMessage = "OK";
                 UserManager userManager = new UserManager();
+
+                //encrypt password
+
                 string IdUser = userManager.InsertUser(user, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
                 {
@@ -114,6 +118,46 @@ namespace OrdersAPI.Controllers
                 response.code = errorCode;
                 response.message = "OK";
                 return CreatedAtRoute("GetUser",new { id= IdUser},response);
+            }
+            catch (Exception ex)
+            {
+
+                response.code = -100;
+                response.message = ex.Message;
+                return BadRequest(response);
+            }
+        }
+
+
+        // POST: api/UserLogin
+        [HttpPost(Name = "UserLogin")]
+        [Route("login")]
+        [EnableCors("MyPolicy")]
+        public ActionResult<OneDataTransfer<User>> login([FromBody] UserLogin userLogin)
+        {
+            OneDataTransfer<User> response = new OneDataTransfer<User>();
+            try
+            {
+                //int errorCode = 0;
+                //string errorMessage = "OK";
+                //UserManager userManager = new UserManager();
+                //string IdUser = userManager.InsertUser(user, ref errorCode, ref errorMessage);
+                //if (errorCode != 0)
+                //{
+                //    response.code = errorCode;
+                //    response.message = errorMessage;
+                //    return BadRequest(response);
+                //}
+                //response.code = errorCode;
+                //response.message = "OK";
+                //return CreatedAtRoute("GetUser", new { id = IdUser }, response);
+                SecurityRSA rSA = new SecurityRSA();
+                string privStringRSA = rSA.GeneratePrivateKey();
+                string pubKey = rSA.GeneratePublicKey();
+                string encryptedPassword = rSA.Encrypt(pubKey, userLogin.Password);
+                string Password = rSA.Decrypt(privStringRSA, encryptedPassword);
+                return CreatedAtRoute("GetUser", new { id = "" }, response);
+
             }
             catch (Exception ex)
             {
