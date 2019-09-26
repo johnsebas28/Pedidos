@@ -1,5 +1,6 @@
 export class User {
     public idUser:String;
+    public idPerfil: number;
     public identification: String;
     public name:String;
     public lastName: String;
@@ -10,15 +11,16 @@ export class User {
     public phone: String;
     public isActive : Boolean;
     constructor( ){
-    this.idUser = "";
-       this.address = "";
-       this.email = "";
-       this.identification = "";
-       this.isActive = true;
-       this.lastName = "";
-       this.name = "";
-       this.nickName = "";
-       this.password = "";
-       this.phone  = "";
+        this.idUser = "";
+        this.idPerfil = 0;
+        this.address = "";
+        this.email = "";
+        this.identification = "";
+        this.isActive = true;
+        this.lastName = "";
+        this.name = "";
+        this.nickName = "";
+        this.password = "";
+        this.phone  = "";
     }
 }

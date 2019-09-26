@@ -1,4 +1,23 @@
 <!-- TODO Aply Directive whit two binding  <p [appHighlight]="color">Highlight me!</p> -->
-<p>
-  Login works!
-</p>
+<div class="col-lg-5">
+  <div class="alert alert-danger" *ngIf="status == 'error'">
+      Error, you have not been able to identify correctly.
+  </div>
+  <div>
+      User Name
+  </div>
+  <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="col-lg-12">
+    <div>
+        <input type="text" name="txtUserName" [(ngModel)]="userLogin.UserName" class="form-control" placeholder="UserName" id="txtUserName">
+    </div>
+    <div>
+      Pass
+    </div>
+    <div>
+      <input type="password" name="txtPassword" [(ngModel)]="userLogin.Password" class="form-control" placeholder="Password" id=txtPassword>
+    </div>
+    <div>
+      <input type="submit" value="Go!" class="btn btn-success" [disabled]="!loginForm.form.valid">
+    </div>
+  </form>
+</div>
