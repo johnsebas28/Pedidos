@@ -17,6 +17,11 @@ using OrdersAPI.Manager;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using OrdersModels.User;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OrdersAPI.Controllers
 {
@@ -75,14 +80,15 @@ namespace OrdersAPI.Controllers
             UserManager userManager = new UserManager();
             int CodError = 0;
             string ErrorMessage = string.Empty;
-            user = userManager.GetUserById(id,ref CodError, ref ErrorMessage);
+            user = userManager.GetUserById(id, ref CodError, ref ErrorMessage);
             if (CodError != 0)
             {
                 ret.code = CodError;
                 ret.message = ErrorMessage;
                 return NotFound(ret);
             }
-            if (user  == null && user.IdUser == 0) {
+            if (user == null && user.IdUser == 0)
+            {
                 ret.data = null;
                 ret.code = -98;
                 ret.message = "Id Not found";
@@ -95,6 +101,7 @@ namespace OrdersAPI.Controllers
         }
 
         // POST: api/User
+        [Authorize]
         [HttpPost(Name = "insert")]
         [Route("[action]")]
         [ActionName("insert")]
@@ -123,7 +130,7 @@ namespace OrdersAPI.Controllers
                 }
                 response.code = errorCode;
                 response.message = "OK";
-                return CreatedAtRoute("getuser",new { id= IdUser},response);
+                return CreatedAtRoute("getuser", new { id = IdUser }, response);
             }
             catch (Exception ex)
             {
@@ -139,9 +146,9 @@ namespace OrdersAPI.Controllers
         [HttpPost(Name = "user-login")]
         [ActionName("user-login")]
         [EnableCors("MyPolicy")]
-        public ActionResult<OneDataTransfer<User>> userLogin([FromBody] UserLogin userLogin)
+        public ActionResult<OneDataTransfer<object>> userLogin([FromBody] UserLogin userLogin)
         {
-            OneDataTransfer<User> response = new OneDataTransfer<User>();
+            OneDataTransfer<object> response = new OneDataTransfer<object>();
             try
             {
                 int errorCode = 0;
@@ -154,16 +161,35 @@ namespace OrdersAPI.Controllers
                 string decryptedPass = rSA.Decrypt(user.Password);
                 if (decryptedPass == userLogin.Password)
                 {
+                    //Get JWT 
+                    var claim = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, user.NickName)
+                    };
+                    var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Aquivaunallaveconlaquequieroencriptar"));
+                    int expiryInMinutes = 5; //Minutes to expired
+
+                    var token = new JwtSecurityToken(
+                        issuer: "http://www.ordersjsp.com.co",
+                        audience: "http://www.ordersjsp.com.co",
+                        expires: DateTime.UtcNow.AddMinutes(expiryInMinutes),
+                        signingCredentials: new SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256)
+                    );
+
+                    response.data = new {
+                        token=  new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration= token.ValidTo
+                    };
                     response.code = errorCode;
                     response.message = "OK";
                     return Ok(response);
                 }
-                else {
+                else
+                {
                     response.code = errorCode;
                     response.message = errorMessage;
-                    return StatusCode(500);
+                    return Unauthorized();
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -208,7 +234,8 @@ namespace OrdersAPI.Controllers
 
         [HttpPatch("{id}")]
         [EnableCors("MyPolicy")]
-        public ActionResult<OneDataTransfer<User>> put(string id) {
+        public ActionResult<OneDataTransfer<User>> put(string id)
+        {
             return null;
         }
 
@@ -221,7 +248,8 @@ namespace OrdersAPI.Controllers
             int errorCode = 0;
             OneDataTransfer<User> response = new OneDataTransfer<User>();
             try
-            {   UserManager userManager = new UserManager();
+            {
+                UserManager userManager = new UserManager();
                 User userExists = userManager.GetUserById(id, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
                 {
@@ -237,7 +265,7 @@ namespace OrdersAPI.Controllers
                     response.message = "User Not Found";
                     return NotFound(response);
                 }
-                
+
                 userManager.DeleteUser(id, ref errorCode, ref errorMessage);
                 if (errorCode != 0)
                 {
